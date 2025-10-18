@@ -1,3 +1,5 @@
+version: '3.9'
+
 volumes:
   n8n_storage:
   postgres_storage:
@@ -107,12 +109,7 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
-  ollama-cpu:
-    profiles: ["cpu"]
-    <<: *service-ollama
-
-  ollama-gpu:
-    profiles: ["gpu-nvidia"]
+  ollama:
     <<: *service-ollama
     deploy:
       resources:
@@ -122,29 +119,7 @@ services:
               count: 1
               capabilities: [gpu]
 
-  ollama-gpu-amd:
-    profiles: ["gpu-amd"]
-    <<: *service-ollama
-    image: ollama/ollama:rocm
-    devices:
-      - "/dev/kfd"
-      - "/dev/dri"
-
-  ollama-pull-llama-cpu:
-    profiles: ["cpu"]
+  ollama-pull-llama:
     <<: *init-ollama
     depends_on:
-      - ollama-cpu
-
-  ollama-pull-llama-gpu:
-    profiles: ["gpu-nvidia"]
-    <<: *init-ollama
-    depends_on:
-      - ollama-gpu
-
-  ollama-pull-llama-gpu-amd:
-    profiles: [gpu-amd]
-    <<: *init-ollama
-    image: ollama/ollama:rocm
-    depends_on:
-     - ollama-gpu-amd
+      - ollama
