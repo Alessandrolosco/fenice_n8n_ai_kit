@@ -5,6 +5,9 @@ volumes:
   postgres_storage:
   ollama_storage:
   qdrant_storage:
+  models:
+  data:
+  open-webui:
 
 networks:
   demo:
