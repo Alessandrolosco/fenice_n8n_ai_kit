@@ -150,5 +150,5 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - ollama-net
+      - ['demo']
     restart: unless-stopped
