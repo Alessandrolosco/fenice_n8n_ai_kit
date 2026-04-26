@@ -200,5 +200,6 @@ services:
     environment:
       - DOCLING_SERVE_HOST=0.0.0.0
       - DOCLING_SERVE_PORT=5001
+      - DOCLING_SERVE_ENABLE_UI=true
     volumes:
       - docling_storage:/tmp/.cache/docling
