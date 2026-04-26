@@ -25,6 +25,8 @@ store with an comprehensive API
 ✅ [**PostgreSQL**](https://www.postgresql.org/) -  Workhorse of the Data
 Engineering world, handles large amounts of data safely.
 
+✅ [**Docling**](https://docling-project.github.io/docling/) - Document processing toolkit for converting PDFs and other documents to Markdown or text (supports GPU acceleration with NVIDIA GPUs)
+
 ### What you can build
 
 ⭐️ **AI Agents** for scheduling appointments
@@ -34,6 +36,17 @@ Engineering world, handles large amounts of data safely.
 ⭐️ **Smarter Slack Bots** for enhanced company communications and IT operations
 
 ⭐️ **Private Financial Document Analysis** at minimal cost
+
+⭐️ **Document Conversion Workflows** using Docling to convert PDFs to Markdown or text for further AI processing
+
+### Docling GPU Support
+
+Docling is configured with GPU acceleration support for NVIDIA GPUs. The service uses the main Docling image (`quay.io/ds4sd/docling-serve:v0.5.1`) which includes GPU capabilities.
+
+To use with GPU:
+1. Ensure your system has NVIDIA drivers and Docker GPU support installed
+2. Run: `docker-compose --profile gpu-nvidia up -d docling`
+3. The service will automatically use GPU if available, otherwise falls back to CPU
 
 ## Installation
 

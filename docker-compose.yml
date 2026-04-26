@@ -10,6 +10,7 @@ volumes:
   media:
   pgdata:
   redisdata:
+  docling_storage:
 
 networks:
   demo:
@@ -189,22 +190,22 @@ services:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
-  webserver:
+  docling:
+    image: quay.io/ds4sd/docling-serve:v0.5.1
+    container_name: docling
     networks: ['demo']
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
-    restart: unless-stopped
-    depends_on:
-      - db
-      - broker
     ports:
-      - "8010:8000"
-    volumes:
-      - paperlessdata:/usr/src/paperless/data
-      - media:/usr/src/paperless/media
-      - ./export:/usr/src/paperless/export
-      - ./consume:/usr/src/paperless/consume
+      - "5001:5001"
+    restart: unless-stopped
     environment:
-      PAPERLESS_REDIS: redis://broker:6379
-      PAPERLESS_DBHOST: db
-    env_file:
-      - .env
+      - DOCLING_SERVE_HOST=0.0.0.0
+      - DOCLING_SERVE_PORT=5001
+    volumes:
+      - docling_storage:/tmp/.cache/docling
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
