@@ -41,6 +41,8 @@ x-ollama: &service-ollama
   volumes:
     - ollama_storage:/root/.ollama
     - models:/models
+  environment:
+    - OLLAMA_NUM_PARALLEL=4        # Permette a n8n di processare più chunk insieme 
 
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
