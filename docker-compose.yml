@@ -45,6 +45,7 @@ x-ollama: &service-ollama
     - OLLAMA_NUM_PARALLEL=4        # Permette a n8n di processare più chunk insieme 
     - OLLAMA_FLASH_ATTENTION=1
     - OLLAMA_MAX_LOADED_MODELS=2
+    - OLLAMA_NEW_ENGINE=1
 
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
