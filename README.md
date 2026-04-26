@@ -41,12 +41,33 @@ Engineering world, handles large amounts of data safely.
 
 ### Docling GPU Support
 
-Docling is configured with GPU acceleration support for NVIDIA GPUs. The service uses the main Docling image (`quay.io/ds4sd/docling-serve:v0.5.1`) which includes GPU capabilities.
+Docling currently runs on CPU by default. To enable GPU acceleration on systems with NVIDIA GPUs:
 
-To use with GPU:
-1. Ensure your system has NVIDIA drivers and Docker GPU support installed
-2. Run: `docker-compose --profile gpu-nvidia up -d docling`
-3. The service will automatically use GPU if available, otherwise falls back to CPU
+1. **Set up NVIDIA Container Runtime** (required for GPU support):
+   ```bash
+   # Install NVIDIA Container Toolkit
+   curl https://get.docker.com | sh
+   # Add this line to /etc/docker/daemon.json:
+   "runtimes": {
+     "nvidia": {
+       "path": "nvidia-container-runtime",
+       "runtimeArgs": []
+     }
+   }
+   # Restart Docker
+   sudo systemctl restart docker
+   ```
+
+2. **Update docker-compose.yml** to use GPU image and runtime:
+   - Change image: `quay.io/ds4sd/docling-serve-cpu:v0.5.1` → `quay.io/ds4sd/docling-serve:v0.5.1`
+   - Add `runtime: nvidia` to the docling service
+   - Add deploy section with GPU reservations
+
+3. **Restart Docling**:
+   ```bash
+   docker-compose down docling
+   docker-compose up -d docling
+   ```
 
 ## Installation
 

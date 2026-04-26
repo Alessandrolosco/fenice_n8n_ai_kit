@@ -191,7 +191,7 @@ services:
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: paperless
   docling:
-    image: quay.io/ds4sd/docling-serve:v0.5.1
+    image: quay.io/ds4sd/docling-serve-cpu:v0.5.1
     container_name: docling
     networks: ['demo']
     ports:
@@ -202,10 +202,3 @@ services:
       - DOCLING_SERVE_PORT=5001
     volumes:
       - docling_storage:/tmp/.cache/docling
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
