@@ -154,6 +154,7 @@ services:
       - OLLAMA_API_URL=http://ollama:11434
       - LOG_LEVEL=debug
       - WEBUI_SECRET_KEY=nky9kzzhnsakf3wygiww8sc3  # Add this to prevent logouts after updates
+      - ENV=dev
     volumes:
       - data:/data
       - models:/models
