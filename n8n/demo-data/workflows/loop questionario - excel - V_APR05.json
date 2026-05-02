@@ -1,0 +1,679 @@
+{
+  "name": "loop questionario - excel - V_APR05",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {
+          "temperature": 0.3,
+          "keepAlive": "5m",
+          "numPredict": 50,
+          "penalizeNewline": true,
+          "format": "default"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        816,
+        448
+      ],
+      "id": "466e2469-d6ab-41b2-94c7-8028c45d76e6",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "9RG26ILVsAIm3CoL",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        288,
+        144
+      ],
+      "id": "7e03ae22-d509-43f0-953e-435e299444bd",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        160
+      ],
+      "id": "bd1bbebd-afd7-4b5a-8e3a-2819a7550a82",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.osservatoriodnf.it/production/dashboard/Aesportadb.php?A=2023",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1392,
+        160
+      ],
+      "id": "4cf59694-1faf-4b8c-8f3a-b97aafa0598a",
+      "name": "Scarica file indice"
+    },
+    {
+      "parameters": {
+        "maxItems": 1000
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        160
+      ],
+      "id": "1f4a9df1-bef5-4742-a83f-a8e0cfe8fb0e",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Converti indice in JSON",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        160
+      ],
+      "id": "6b65e4b0-f8d4-422d-ba71-c0aa3650591f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4c092e4-7c78-4076-b407-1109fe8adf74",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "303b4071-9ee2-4a60-bee2-a5de08e2216d",
+              "leftValue": "={{ $json.NameFile }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d73f625d-367f-4526-a2cd-87aa41926d79",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "NULL",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "ccfb8f64-797f-4dbe-beee-367b7921750e",
+              "leftValue": "={{ $json.NameFile }}",
+              "rightValue": "NULL",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "b6527bda-fe9f-4209-947a-9b020ce6fda6",
+              "leftValue": "={{ $json.Aziende_nel_Database }}",
+              "rightValue": "ARNOLDO MONDADORI EDITORE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -688,
+        176
+      ],
+      "id": "d46e484a-cacf-4267-ac08-0cc9973ef2b9",
+      "name": "Filtra record non validi"
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -192,
+        176
+      ],
+      "id": "e5a19e57-e737-4b3a-b586-bce6b9e4b5dd",
+      "name": "Splitta in batch (Rate limiting)"
+    },
+    {
+      "parameters": {
+        "content": "## Revisionato da FDP",
+        "height": 176,
+        "width": 288
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "ec310767-1699-4744-9636-aa0b50c1f7b9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "https://github.com/Alessandrolosco/fenice_n8n_ai_kit/raw/refs/heads/main/assets/questionario_esteso.xlsx",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        144
+      ],
+      "id": "86173de3-e649-4196-a835-3f87bd231104",
+      "name": "Scarica questionario"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        48,
+        160
+      ],
+      "id": "5d611ed7-0d7a-4551-bafc-e4e5a6a71f40",
+      "name": "Estrai domanda"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "0q8RmdcmOY1vyRNo",
+          "mode": "list",
+          "cachedResultName": "Risposte",
+          "cachedResultUrl": "/projects/ICymDlVOPLC5rIUd/datatables/0q8RmdcmOY1vyRNo"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_domanda",
+              "keyValue": "={{ $('Estrai domanda').item.json.id }}"
+            },
+            {
+              "keyName": "azienda",
+              "keyValue": "={{ $('Scarica questionario').item.json.Aziende_nel_Database }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_domanda": "={{ $('Estrai domanda').item.json.id }}",
+            "azienda": "={{ $('Scarica questionario').item.json.Aziende_nel_Database }}",
+            "risposta": "={{ $json.response }}",
+            "domanda": "={{ $('Estrai domanda').item.json.Domanda }}",
+            "anno": "2023"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_domanda",
+              "displayName": "id_domanda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "risposta",
+              "displayName": "risposta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "domanda",
+              "displayName": "domanda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "azienda",
+              "displayName": "azienda",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "anno",
+              "displayName": "anno",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        224
+      ],
+      "id": "e4fcf771-84f3-4be6-bc8f-44eef240e9df",
+      "name": "Upsert row(s)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Domanda }}",
+        "options": {
+          "systemPromptTemplate": "=/set nothink\nIstruzioni:Di seguito ti darò un testo \"Context\" e in base a questo testo dovrai rispondere alla Domanda che ti pongo. Rispondi esclusivamente in formato testuale pulito. Non includere passaggi di ragionamento, analisi interne o tag. Vai direttamente alla risposta. Rispondendo, non pormi altre domande, e non chiedermi di fornire ulteriori informazioni, e se non sai rispondere basandoti sul context fornito, semplicemente rispondi con **blank** oppure con \"n/d\". IMPORTANTE: non suggerire ulteriori passaggi o approfondimenti. Rispondi passivamente alla domanda che ti viene posta. Esempio: non rispondere MAI in questo modo:\n\"Mi dispiace, non ho abbastanza informazioni per rispondere alla tua domanda. Potresti fornirmi ulteriori dettagli o contesto?\"\n________________\nAssunzioni: Sei un esperto di aziende italiane e conosci a fondo le politiche aziendali. Utilizza gli elementi del prospetto informativo non finanziario e le migliori prassi per rispondere alla domanda che scriverò alla fine. Se non conosci la risposta, lascia semplicemente uno spazio vuoto; non cercare di inventare una risposta. Basa la risposta esclusivamente sul Context. Se la risposta è in forma testuale, rispondi in italiano.\n----------------\nConstraints: {{ $json['Modalità di risposta, possibili risposte e vincoli o ulteriori dettagli'] }}\n----------------\nContext: {context} . \n----------------\nDomanda:"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.7,
+      "position": [
+        832,
+        176
+      ],
+      "id": "598e3b59-2130-432d-8e1e-0884d00ee521",
+      "name": "Question and Answer Chain1"
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "feniceAi_qwen3Embedding_4096_01",
+          "mode": "list",
+          "cachedResultName": "feniceAi_qwen3Embedding_4096_01"
+        },
+        "options": {
+          "searchFilterJson": "={\n    \"must\": [\n      {\n        \"key\": \"metadata.nomeAzienda\",\n        \"match\": {\n          \"value\": \"{{ $('Loop Over Items').item.json.azienda }}\"\n        }\n      }\n    ]\n  }  "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1296,
+        560
+      ],
+      "id": "48c75a64-f33d-4c6e-8211-bf530cfc90d9",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "Vl0G7UnM3cKJmrww",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "qwen3-embedding:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        848
+      ],
+      "id": "adc79309-7761-4327-986c-deecd43d6cc4",
+      "name": "Embeddings Ollama1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "9RG26ILVsAIm3CoL",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topK": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        448
+      ],
+      "id": "0f31f3ad-fd13-4786-8f7a-0426264a00b8",
+      "name": "Vector Store Retriever1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4c092e4-7c78-4076-b407-1109fe8adf74",
+              "leftValue": "={{ $json['Da porre'] }}",
+              "rightValue": "Si",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "72707250-4faf-4634-8edb-bea4acfcc144",
+              "leftValue": "={{ $json.Domanda }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5c3f9e42-60f0-4476-9a33-cedc0b5bd40f",
+              "leftValue": "={{ $json['Modalità di risposta, possibili risposte e vincoli o ulteriori dettagli'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        192
+      ],
+      "id": "d408509a-3455-49fb-b84a-36140a650cc8",
+      "name": "Filtra record non validi1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Splitta in batch (Rate limiting)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Filtra record non validi1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Scarica file indice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scarica file indice": {
+      "main": [
+        [
+          {
+            "node": "Converti indice in JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Filtra record non validi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converti indice in JSON": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra record non validi": {
+      "main": [
+        [
+          {
+            "node": "Scarica questionario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Splitta in batch (Rate limiting)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Estrai domanda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scarica questionario": {
+      "main": [
+        [
+          {
+            "node": "Splitta in batch (Rate limiting)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estrai domanda": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert row(s)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question and Answer Chain1": {
+      "main": [
+        [
+          {
+            "node": "Upsert row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever1",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever1": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra record non validi1": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b6a0e452-4238-48b9-af39-1fb4c8418741",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "kULxmojPfZBmZlTP",
+  "tags": [
+    {
+      "updatedAt": "2025-10-18T21:17:24.979Z",
+      "createdAt": "2025-10-18T21:17:24.979Z",
+      "id": "CvaybzxFJOk5ghvQ",
+      "name": "Fenice"
+    }
+  ]
+}
